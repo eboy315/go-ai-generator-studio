@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>GO—AI Image GENERATOR</title>
+  <title>GO—AI Image Generator</title>
   <meta name="description" content="Generate images across multiple AI providers from one studio.">
   <meta name="theme-color" content="#050816">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%238b5cf6'/%3E%3Cstop offset='1' stop-color='%2322d3ee'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='18' fill='%23050816'/%3E%3Cpath d='M32 9 38 25l17 7-17 7-6 16-6-16-17-7 17-7 6-16Z' fill='url(%23g)'/%3E%3C/svg%3E">
@@ -16,7 +16,7 @@
   <section class="login-screen" id="loginScreen" aria-labelledby="loginTitle">
     <div class="login-glow login-glow-one"></div><div class="login-glow login-glow-two"></div>
     <form class="login-card glass-panel" id="loginForm">
-      <div class="login-brand"><span class="brand-mark">✦</span><span>AURA<span class="brand-dot">.</span>AI</span></div>
+      <div class="login-brand"><span class="brand-mark">✦</span><span>Go<span class="brand-dot">.</span>AI</span></div>
       <p class="eyebrow">PRIVATE IMAGE STUDIO</p>
       <h1 id="loginTitle">Welcome back.</h1>
       <p class="login-copy">Sign in to continue creating, save your gallery, and keep your studio preferences in this browser.</p>
@@ -24,13 +24,13 @@
       <label class="field-label" for="loginEmail">Email<input id="loginEmail" type="email" autocomplete="email" placeholder="you@example.com" required></label>
       <label class="field-label" for="loginPassword">Password<input id="loginPassword" type="password" autocomplete="current-password" placeholder="At least 6 characters" minlength="6" required></label>
       <label class="remember-row"><input id="rememberLogin" type="checkbox" checked> <span>Keep me signed in on this device</span></label>
-      <button class="generate-button login-button" type="submit"><span>Enter AURA.AI</span><b>↗</b></button>
+      <button class="generate-button login-button" type="submit"><span>Enter Go.AI</span><b>↗</b></button>
       <p class="login-note">Demo login only: credentials stay in this browser and are not sent to a server.</p>
     </form>
   </section>
   <main class="app-shell" id="appView" hidden>
     <header class="site-header glass-panel">
-      <a class="brand" href="#top" aria-label="AURA.AI home"><span class="brand-mark">✦</span><span>AURA<span class="brand-dot">.</span>AI</span></a>
+      <a class="brand" href="#top" aria-label="Go.AI home"><span class="brand-mark">✦</span><span>Go<span class="brand-dot">.</span>AI</span></a>
       <div class="header-controls"><span class="user-chip" id="userChip"></span><button class="logout-button" id="logoutButton" type="button">Log out</button>
         <label class="provider-picker">Provider
           <select id="providerSelect">
