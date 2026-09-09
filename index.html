@@ -1,88 +1,123 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#10130f" />
-  <meta name="description" content="go-ai Image Studio powered by Decipher Innovate." />
-  <title>go-ai Image Studio | Decipher Innovate</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GO—AI Image GENERATOR</title>
+  <meta name="description" content="Generate images across multiple AI providers from one studio.">
+  <meta name="theme-color" content="#050816">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%238b5cf6'/%3E%3Cstop offset='1' stop-color='%2322d3ee'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='18' fill='%23050816'/%3E%3Cpath d='M32 9 38 25l17 7-17 7-6 16-6-16-17-7 17-7 6-16Z' fill='url(%23g)'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="studio-shell" id="studioShell">
-    <div class="mobile-scrim" id="mobileScrim"></div>
-
-    <aside class="studio-sidebar" id="studioSidebar" aria-label="Main navigation">
-      <div class="brand-lockup">
-        <div class="brand-mark" aria-hidden="true"><span></span><span></span></div>
-        <div class="brand-copy"><span class="brand-name">go-ai</span><span class="brand-caption">image studio</span></div>
-        <button class="icon-button sidebar-close-mobile" id="closeSidebar" aria-label="Close sidebar"><i data-lucide="x"></i></button>
+  <section class="login-screen" id="loginScreen" aria-labelledby="loginTitle">
+    <div class="login-glow login-glow-one"></div><div class="login-glow login-glow-two"></div>
+    <form class="login-card glass-panel" id="loginForm">
+      <div class="login-brand"><span class="brand-mark">✦</span><span>AURA<span class="brand-dot">.</span>AI</span></div>
+      <p class="eyebrow">PRIVATE IMAGE STUDIO</p>
+      <h1 id="loginTitle">Welcome back.</h1>
+      <p class="login-copy">Sign in to continue creating, save your gallery, and keep your studio preferences in this browser.</p>
+      <label class="field-label" for="loginName">Name<input id="loginName" type="text" autocomplete="name" placeholder="Your name" required></label>
+      <label class="field-label" for="loginEmail">Email<input id="loginEmail" type="email" autocomplete="email" placeholder="you@example.com" required></label>
+      <label class="field-label" for="loginPassword">Password<input id="loginPassword" type="password" autocomplete="current-password" placeholder="At least 6 characters" minlength="6" required></label>
+      <label class="remember-row"><input id="rememberLogin" type="checkbox" checked> <span>Keep me signed in on this device</span></label>
+      <button class="generate-button login-button" type="submit"><span>Enter AURA.AI</span><b>↗</b></button>
+      <p class="login-note">Demo login only: credentials stay in this browser and are not sent to a server.</p>
+    </form>
+  </section>
+  <main class="app-shell" id="appView" hidden>
+    <header class="site-header glass-panel">
+      <a class="brand" href="#top" aria-label="AURA.AI home"><span class="brand-mark">✦</span><span>AURA<span class="brand-dot">.</span>AI</span></a>
+      <div class="header-controls"><span class="user-chip" id="userChip"></span><button class="logout-button" id="logoutButton" type="button">Log out</button>
+        <label class="provider-picker">Provider
+          <select id="providerSelect">
+            <option value="pollinations">Pollinations</option>
+            <option value="google">Google Imagen</option>
+            <option value="huggingface">FLUX.1</option>
+          </select>
+        </label>
+        <button class="key-status" id="openKeys" type="button"><span id="keyIndicator" class="status-dot"></span><span id="keyStatusText">API keys</span></button>
       </div>
+    </header>
 
-      <button class="new-project-button" id="newCanvasButton"><i data-lucide="plus"></i><span>New canvas</span><kbd>⌘ K</kbd></button>
-
-      <nav class="side-nav" aria-label="Studio sections">
-        <button class="side-nav-item active" data-view="create"><i data-lucide="wand-sparkles"></i><span class="nav-label">Create</span></button>
-        <button class="side-nav-item" data-view="gallery"><i data-lucide="grid-2x2"></i><span class="nav-label">Gallery</span><span class="side-count" id="galleryCount">3</span></button>
-        <button class="side-nav-item" data-view="history"><i data-lucide="history"></i><span class="nav-label">Prompt history</span></button>
-      </nav>
-
-      <div class="sidebar-section-label">Workspace</div>
-      <div class="side-nav secondary-nav">
-        <button class="side-nav-item" data-coming-soon="Collections"><i data-lucide="layers-3"></i><span class="nav-label">Collections</span></button>
-        <button class="side-nav-item" data-coming-soon="Brand kits"><i data-lucide="folder-open"></i><span class="nav-label">Brand kits</span></button>
+    <section class="reference-landing" id="top" aria-labelledby="landingTitle">
+      <div class="reference-copy">
+        <p class="eyebrow">GO—AI / IMAGE GENERATOR</p>
+        <h1 id="landingTitle">Create images from your imagination.</h1>
+        <p>Describe a scene, choose your visual direction, and let your idea become a polished image in seconds.</p>
       </div>
-
-      <div class="sidebar-bottom">
-        <div class="engine-status"><span class="status-dot"></span><div class="status-copy"><strong>Pollinations API</strong><span>Live image engine</span></div></div>
-        <div class="sidebar-user-row"><div class="user-avatar">DI</div><div class="user-copy"><strong>Decipher Innovate</strong><span>Studio workspace</span></div><button class="icon-button" data-coming-soon="Workspace settings" aria-label="Workspace settings"><i data-lucide="settings-2"></i></button></div>
+      <div class="reference-promptbar">
+        <span class="prompt-icon" aria-hidden="true">⌕</span>
+        <input id="quickPrompt" type="text" placeholder="A photorealistic cat in a warm modern café..." aria-label="Quick image prompt">
+        <button id="quickGenerate" type="button"><span>Generate</span><b>↗</b></button>
       </div>
-    </aside>
-
-    <main class="studio-main">
-      <header class="topbar">
-        <div class="topbar-left"><button class="icon-button mobile-menu-button" id="openSidebar" aria-label="Open sidebar"><i data-lucide="menu"></i></button><button class="icon-button collapse-button" id="collapseSidebar" aria-label="Collapse sidebar"><i data-lucide="panel-left-close"></i></button><div class="crumb"><span>Studio</span><i data-lucide="chevron-right"></i><strong id="crumbTitle">New canvas</strong></div></div>
-        <div class="topbar-actions"><div class="api-pill"><span class="status-dot"></span> API connected</div><button class="icon-button" id="themeToggle" aria-label="Toggle theme"><i data-lucide="sun"></i></button><button class="avatar-button">DI</button></div>
-      </header>
-
-      <div class="workspace-content">
-        <section class="view create-view" id="createView">
-          <div class="create-layout">
-            <div class="intro-column">
-              <div class="eyebrow"><span class="eyebrow-line"></span> GO-AI / 01</div>
-              <h1>Make the<br /><em>unseen</em> visible.</h1>
-              <p class="intro-copy">A focused image lab for precise ideas, expressive direction, and frames that feel unmistakably yours.</p>
-              <div class="reference-canvas"><img id="heroReference" src="/manus-storage/go-ai-hero-reference_e06b1002.jpg" data-fallback="https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1400&q=86" alt="Editorial creative desk with a luminous signal line" /><div class="canvas-signal-line"></div><div class="canvas-caption"><span>LIVE CANVAS</span><strong>Signal study / 01</strong></div></div>
-              <div class="intro-stats"><div><strong>∞</strong><span>directions</span></div><div><strong>4K</strong><span>ready output</span></div><div><strong>01</strong><span>live engine</span></div></div>
-              <div class="doodle-stage" aria-hidden="true"><div class="doodle-orbit orbit-one"></div><div class="doodle-orbit orbit-two"></div><div class="doodle-node node-one"></div><div class="doodle-node node-two"></div><div class="doodle-node node-three"></div><span class="doodle-spark">✦</span><span class="doodle-label">prompt → frame</span></div>
-            </div>
-
-            <div class="command-column">
-              <div class="command-header"><div><span class="section-kicker">Creative command deck</span><h2>What are you making?</h2></div><button class="text-button" id="surpriseButton"><i data-lucide="zap"></i> Surprise me</button></div>
-              <form id="generatorForm">
-                <div class="prompt-card"><div class="prompt-card-top"><span class="prompt-index">01</span><span class="prompt-hint">Describe your frame</span><button class="icon-button small" type="button" id="clearPrompt" aria-label="Clear prompt"><i data-lucide="eraser"></i></button></div><textarea id="promptInput" maxlength="800" rows="5" placeholder="A luminous archive of botanical specimens inside a brutalist observatory..."></textarea><div class="prompt-card-bottom"><span><span id="charCount">0</span>/800</span><span class="shortcut"><i data-lucide="command"></i> Enter to generate</span></div></div>
-                <div class="controls-card"><div class="controls-heading"><span class="section-kicker">Direction</span><span class="mono-note">API / POLLINATIONS</span></div><div class="control-block"><label>Visual language</label><div class="option-pills" id="styleOptions"></div></div><div class="control-grid"><div class="control-field"><label for="aspectSelect">Frame</label><div class="select-shell"><select id="aspectSelect"><option value="square">Square · 1:1</option><option value="landscape">Wide · 16:9</option><option value="portrait">Portrait · 9:16</option></select><i data-lucide="chevron-down"></i></div></div><div class="control-field"><label for="qualitySelect">Quality</label><div class="select-shell"><select id="qualitySelect"><option>Draft</option><option selected>Studio</option><option>Ultra</option></select><i data-lucide="chevron-down"></i></div></div></div><div class="control-field"><label for="negativePrompt">Negative direction <span>optional</span></label><input id="negativePrompt" type="text" placeholder="soft focus, text, watermark..." /></div><div class="reference-row"><button class="reference-button" id="attachButton" type="button"><i data-lucide="paperclip"></i><span id="referenceLabel">Attach a reference</span></button><input id="referenceInput" type="file" accept="image/*" hidden /><span>Optional</span></div></div>
-                <button class="generate-button" id="generateButton" type="submit"><i data-lucide="sparkles"></i><span>Generate the frame</span><i data-lucide="arrow-up-right"></i></button>
-              </form>
-              <div class="engine-note"><span class="status-dot"></span> Live generation via Pollinations <i data-lucide="circle-help"></i></div>
-            </div>
-          </div>
-        </section>
-
-        <section class="view gallery-view" id="galleryView" hidden><div class="view-header"><div><div class="eyebrow"><span class="eyebrow-line"></span> COLLECTION / 02</div><h1>Your visual archive.</h1><p>Every direction, kept in one place.</p></div><button class="primary-outline-button" data-action="create"><i data-lucide="plus"></i> New canvas</button></div></section>
-        <section class="view history-view" id="historyView" hidden><div class="view-header"><div><div class="eyebrow"><span class="eyebrow-line"></span> PROMPTS / 03</div><h1>Directions worth keeping.</h1><p>Reuse, refine, and return to your strongest ideas.</p></div><button class="primary-outline-button" data-action="create"><i data-lucide="wand-sparkles"></i> Create from scratch</button></div><div class="prompt-history-list" id="historyList"></div></section>
-
-        <section class="gallery-section gallery-section-create" id="gallerySection"><div class="gallery-heading"><div><span class="section-kicker" id="galleryKicker">Curated references</span><h2 id="galleryTitle">Start with a visual signal</h2></div><div class="gallery-actions"><button class="icon-button" id="filterButton" aria-label="Toggle filters"><i data-lucide="filter"></i></button><span class="gallery-count"><span id="visibleCount">3</span> frames</span></div></div><div class="gallery-toolbar" id="galleryToolbar" hidden><div class="search-field"><i data-lucide="search"></i><input id="searchInput" type="search" placeholder="Search frames and prompts" /><button class="icon-button small" id="clearSearch" type="button" aria-label="Clear search"><i data-lucide="x"></i></button></div><button class="quiet-button" id="allFramesButton"><i data-lucide="grid-2x2"></i> All frames</button></div><div class="gallery-grid" id="galleryGrid"></div></section>
+      <div class="reference-featured">
+        <div class="reference-toolbar"><span><i></i><i></i><i></i></span><span class="featured-label">FEATURED OUTPUT</span><button id="useFeaturedPrompt" type="button" aria-label="Use featured prompt">↗</button></div>
+        <img src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=1400&q=85" alt="Photorealistic cat resting in a warm café">
+        <div class="featured-caption"><span>Warm café portrait</span><small>Pollinations · 1:1</small></div>
       </div>
-    </main>
+      <div class="reference-results-heading"><span>Results</span><span class="results-line"></span><small>Curated starting points</small></div>
+      <div class="reference-results" aria-label="Example generated images">
+        <button type="button" class="reference-thumb" data-starter="Photorealistic cat resting on a wooden café table, warm pendant lights, shallow depth of field"><img src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=500&q=80" alt="Cat in café"><span>Warm café</span></button>
+        <button type="button" class="reference-thumb" data-starter="A cinematic European street at golden hour, people dining outside, editorial photography"><img src="https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?auto=format&fit=crop&w=500&q=80" alt="European street"><span>Golden hour</span></button>
+        <button type="button" class="reference-thumb" data-starter="A dreamlike moonlit shoreline with violet clouds and a lone figure, cinematic fantasy art"><img src="https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=500&q=80" alt="Dreamlike shoreline"><span>Dreamlike shore</span></button>
+      </div>
+    </section>
+
+    <section class="intro compact-intro">
+      <p class="eyebrow">FULL STUDIO CONTROLS</p>
+      <h2>Refine every detail.</h2>
+      <p class="intro-copy">Switch providers, add negative prompts, tune aspect ratio and style, then keep your results in the local archive.</p>
+    </section>
+
+    <section class="studio-layout" aria-label="Image generation studio">
+      <aside class="control-panel glass-panel">
+        <div class="panel-heading"><div><p class="eyebrow">CREATE</p><h2>Describe your image</h2></div><span class="panel-number">01</span></div>
+        <label class="field-label" for="prompt">Prompt</label>
+        <textarea id="prompt" rows="7" placeholder="A cinematic portrait of a traveler under an aurora..." spellcheck="true"></textarea>
+        <label class="field-label" for="negativePrompt">Negative prompt <span>optional</span></label>
+        <textarea id="negativePrompt" rows="3" placeholder="blurry, distorted, low quality"></textarea>
+        <div class="prompt-starters" aria-label="Prompt starters">
+          <span>Try a starter</span>
+          <button type="button" data-starter="Editorial portrait, soft window light, natural skin texture">Editorial portrait</button>
+          <button type="button" data-starter="Futuristic city at blue hour, cinematic atmosphere, wide composition">Futuristic city</button>
+          <button type="button" data-starter="Minimal product photograph on a sculptural pedestal, studio light">Product shot</button>
+        </div>
+        <div class="field-grid">
+          <label class="field-label">Aspect ratio<select id="aspectRatio"><option value="1:1">1:1 · Square</option><option value="16:9">16:9 · Wide</option><option value="4:3">4:3 · Landscape</option><option value="3:4">3:4 · Portrait</option><option value="9:16">9:16 · Tall</option></select></label>
+          <label class="field-label">Style<select id="style"><option value="None">None</option><option value="Cinematic">Cinematic</option><option value="Photorealistic">Photorealistic</option><option value="Illustration">Illustration</option><option value="3D render">3D render</option></select></label>
+        </div>
+        <button class="generate-button" id="generateButton" type="button"><span>Generate image</span><b>↗</b></button>
+        <p class="helper-text" id="providerHelp">Pollinations can be used without an API key.</p>
+      </aside>
+
+      <section class="canvas-panel glass-panel" aria-live="polite">
+        <div class="panel-heading"><div><p class="eyebrow">CANVAS</p><h2 id="canvasTitle">Your image will appear here</h2></div><span class="panel-number">02</span></div>
+        <div class="canvas-stage" id="canvasStage"><div class="canvas-placeholder"><div class="placeholder-icon">✦</div><p>Write a prompt, choose your settings, and press generate.</p></div></div>
+        <div class="canvas-toolbar"><span class="canvas-status"><i></i><span id="canvasStatus">Ready for your prompt</span></span><div><button class="canvas-action" id="downloadImage" type="button" disabled>Download</button><button class="canvas-action" id="reuseImage" type="button" disabled>Reuse prompt</button></div></div>
+      </section>
+    </section>
+
+    <section class="gallery-section glass-panel" id="gallery">
+      <div class="section-heading"><div><p class="eyebrow">ARCHIVE</p><h2>Recent generations</h2></div><button class="text-button" id="clearHistory" type="button">Clear history</button></div>
+      <div class="gallery-grid" id="galleryGrid"><p class="empty-history">Your generated images will be saved in this browser.</p></div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" id="keyModal" hidden>
+    <section class="modal glass-panel" role="dialog" aria-modal="true" aria-labelledby="keyModalTitle">
+      <button class="modal-close" id="closeKeys" type="button" aria-label="Close API key settings">×</button>
+      <p class="eyebrow">SETTINGS</p><h2 id="keyModalTitle">API keys</h2><p class="modal-copy">Keys are stored only in this browser. Never share them publicly.</p>
+      <label class="field-label" for="googleKey">Google API key<input id="googleKey" type="password" placeholder="Paste Google key"></label>
+      <label class="field-label" for="huggingfaceKey">Hugging Face API key<input id="huggingfaceKey" type="password" placeholder="Paste Hugging Face key"></label>
+      <div class="modal-actions"><button class="secondary-button" id="removeKeys" type="button">Remove keys</button><button class="primary-button" id="saveKeys" type="button">Save keys</button></div>
+    </section>
   </div>
 
-  <div class="lightbox" id="lightbox" hidden><div class="lightbox-card" role="dialog" aria-modal="true" aria-label="Image preview"><button class="lightbox-close icon-button" id="closeLightbox" aria-label="Close preview"><i data-lucide="x"></i></button><div class="lightbox-image"><img id="lightboxImage" alt="" /></div><div class="lightbox-details"><div><span class="section-kicker" id="lightboxStyle"></span><h2 id="lightboxPrompt"></h2></div><div class="lightbox-actions"><button class="secondary-button" id="copyLightbox"><i data-lucide="copy"></i> Copy prompt</button><button class="generate-button compact" id="downloadLightbox"><i data-lucide="download"></i> Download</button></div></div></div></div>
-  <div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
+  <div class="toast-stack" id="toastStack" aria-live="polite"></div>
   <script src="script.js"></script>
 </body>
 </html>
