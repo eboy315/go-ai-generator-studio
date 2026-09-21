@@ -1,123 +1,1074 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>GO—AI Image Generator</title>
-  <meta name="description" content="Generate images across multiple AI providers from one studio.">
-  <meta name="theme-color" content="#050816">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%238b5cf6'/%3E%3Cstop offset='1' stop-color='%2322d3ee'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='18' fill='%23050816'/%3E%3Cpath d='M32 9 38 25l17 7-17 7-6 16-6-16-17-7 17-7 6-16Z' fill='url(%23g)'/%3E%3C/svg%3E">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <section class="login-screen" id="loginScreen" aria-labelledby="loginTitle">
-    <div class="login-glow login-glow-one"></div><div class="login-glow login-glow-two"></div>
-    <form class="login-card glass-panel" id="loginForm">
-      <div class="login-brand"><span class="brand-mark">✦</span><span>Go<span class="brand-dot">.</span>AI</span></div>
-      <p class="eyebrow">PRIVATE IMAGE STUDIO</p>
-      <h1 id="loginTitle">Welcome back.</h1>
-      <p class="login-copy">Sign in to continue creating, save your gallery, and keep your studio preferences in this browser.</p>
-      <label class="field-label" for="loginName">Name<input id="loginName" type="text" autocomplete="name" placeholder="Your name" required></label>
-      <label class="field-label" for="loginEmail">Email<input id="loginEmail" type="email" autocomplete="email" placeholder="you@example.com" required></label>
-      <label class="field-label" for="loginPassword">Password<input id="loginPassword" type="password" autocomplete="current-password" placeholder="At least 6 characters" minlength="6" required></label>
-      <label class="remember-row"><input id="rememberLogin" type="checkbox" checked> <span>Keep me signed in on this device</span></label>
-      <button class="generate-button login-button" type="submit"><span>Enter Go.AI</span><b>↗</b></button>
-      <p class="login-note">Demo login only: credentials stay in this browser and are not sent to a server.</p>
-    </form>
-  </section>
-  <main class="app-shell" id="appView" hidden>
-    <header class="site-header glass-panel">
-      <a class="brand" href="#top" aria-label="Go.AI home"><span class="brand-mark">✦</span><span>Go<span class="brand-dot">.</span>AI</span></a>
-      <div class="header-controls"><span class="user-chip" id="userChip"></span><button class="logout-button" id="logoutButton" type="button">Log out</button>
-        <label class="provider-picker">Provider
-          <select id="providerSelect">
-            <option value="pollinations">Pollinations</option>
-            <option value="google">Google Imagen</option>
-            <option value="huggingface">FLUX.1</option>
-          </select>
-        </label>
-        <button class="key-status" id="openKeys" type="button"><span id="keyIndicator" class="status-dot"></span><span id="keyStatusText">API keys</span></button>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Go-AI Generator — Create Stunning AI Images</title>
+    <meta name="description" content="Create stunning AI-generated images from simple text prompts with Go-AI Generator." />
+    <meta name="theme-color" content="#09090f" />
+
+    <!-- Open Graph Metadata -->
+    <meta property="og:title" content="Go-AI Generator — Create Stunning AI Images" />
+    <meta property="og:description" content="Create stunning AI-generated images from simple text prompts with Go-AI Generator." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Custom AI Favicon (AI Spark & Creativity SVG) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2309090f'/%3E%3Ctext x='32' y='40' text-anchor='middle' font-family='Arial,sans-serif' font-size='28' font-weight='800' fill='%238b5cf6'%3Ego%3C/text%3E%3C/svg%3E">
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Background Atmosphere Glows -->
+    <div class="bg-glow glow-1" aria-hidden="true"></div>
+    <div class="bg-glow glow-2" aria-hidden="true"></div>
+    <div class="bg-glow glow-3" aria-hidden="true"></div>
+
+    <!-- SVG Definitions for Gradients -->
+    <svg width="0" height="0" class="svg-defs" aria-hidden="true">
+      <defs>
+        <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#8b5cf6" />
+          <stop offset="50%" stop-color="#6366f1" />
+          <stop offset="100%" stop-color="#ec4899" />
+        </linearGradient>
+      </defs>
+    </svg>
+
+    <!-- ==========================================================================
+         HEADER / NAVIGATION
+         ========================================================================== -->
+    <header class="site-header" id="siteHeader">
+      <div class="container header-container">
+        <!-- Logo & Brand -->
+        <a href="#home" class="brand-link" id="brandLink" aria-label="Go-AI Generator Home">
+    <span class="brand-go-mark">go</span>
+    <span class="brand-text">Go-AI Generator</span>
+</a>
+        <!-- Desktop Navigation -->
+        <nav class="desktop-nav" aria-label="Main Navigation">
+          <ul class="nav-links">
+            <li><a href="#home" class="nav-link active" id="navHome">Home</a></li>
+            <li><a href="#generator" class="nav-link" id="navGenerate">Generate</a></li>
+            <li><a href="#explore" class="nav-link" id="navExplore">Explore</a></li>
+            <li><a href="#history" class="nav-link" id="navHistory">History</a></li>
+            <li><a href="#about" class="nav-link" id="navAbout">About</a></li>
+          </ul>
+        </nav>
+
+        <!-- Right Side Actions -->
+        <div class="header-actions">
+          <!-- Theme Toggle Button -->
+          <button type="button" class="theme-toggle-btn" id="themeToggleBtn" aria-label="Switch to light mode" title="Toggle Theme">
+            <svg class="theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+            <svg class="theme-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5" />
+              <line x1="12" y1="1" x2="12" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="23" />
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+              <line x1="1" y1="12" x2="3" y2="12" />
+              <line x1="21" y1="12" x2="23" y2="12" />
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+            </svg>
+          </button>
+
+          <!-- Login Button (Guest State) -->
+          <button type="button" class="btn btn-ghost btn-login" id="headerLoginBtn">
+            <span>Login</span>
+          </button>
+
+          <!-- Profile Dropdown (Authenticated State) -->
+          <div class="profile-menu-wrapper" id="profileMenuWrapper" style="display: none;">
+            <button type="button" class="profile-btn" id="profileBtn" aria-haspopup="true" aria-expanded="false">
+              <span class="profile-avatar" id="profileAvatar">U</span>
+              <span class="profile-name" id="profileName">User</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="profile-dropdown" id="profileDropdown" role="menu">
+              <div class="dropdown-header">
+                <div class="dropdown-user-name" id="dropdownUserName">User Name</div>
+                <div class="dropdown-user-email" id="dropdownUserEmail">user@example.com</div>
+              </div>
+              <button type="button" class="dropdown-item" id="profileHistoryLink" role="menuitem">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 14 14"></polyline>
+                </svg>
+                <span>My Generations</span>
+              </button>
+              <button type="button" class="dropdown-item" id="profileFavoritesLink" role="menuitem">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+                <span>Favorites</span>
+              </button>
+              <div class="dropdown-divider"></div>
+              <button type="button" class="dropdown-item danger" id="logoutDropdownBtn" role="menuitem">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                  <polyline points="16 17 21 12 16 7"></polyline>
+                  <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                <span>Logout</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Start Creating Action Button -->
+          <a href="#generator" class="btn btn-primary" id="headerStartBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z" />
+            </svg>
+            <span>Start Creating</span>
+          </a>
+
+          <!-- Mobile Hamburger Menu Button -->
+          <button type="button" class="mobile-hamburger-btn" id="mobileHamburgerBtn" aria-label="Open navigation menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+        </div>
       </div>
     </header>
 
-    <section class="reference-landing" id="top" aria-labelledby="landingTitle">
-      <div class="reference-copy">
-        <p class="eyebrow">GO—AI / IMAGE GENERATOR</p>
-        <h1 id="landingTitle">Create images from your imagination.</h1>
-        <p>Describe a scene, choose your visual direction, and let your idea become a polished image in seconds.</p>
-      </div>
-      <div class="reference-promptbar">
-        <span class="prompt-icon" aria-hidden="true">⌕</span>
-        <input id="quickPrompt" type="text" placeholder="A photorealistic cat in a warm modern café..." aria-label="Quick image prompt">
-        <button id="quickGenerate" type="button"><span>Generate</span><b>↗</b></button>
-      </div>
-      <div class="reference-featured">
-        <div class="reference-toolbar"><span><i></i><i></i><i></i></span><span class="featured-label">FEATURED OUTPUT</span><button id="useFeaturedPrompt" type="button" aria-label="Use featured prompt">↗</button></div>
-        <img src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=1400&q=85" alt="Photorealistic cat resting in a warm café">
-        <div class="featured-caption"><span>Warm café portrait</span><small>Pollinations · 1:1</small></div>
-      </div>
-      <div class="reference-results-heading"><span>Results</span><span class="results-line"></span><small>Curated starting points</small></div>
-      <div class="reference-results" aria-label="Example generated images">
-        <button type="button" class="reference-thumb" data-starter="Photorealistic cat resting on a wooden café table, warm pendant lights, shallow depth of field"><img src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=500&q=80" alt="Cat in café"><span>Warm café</span></button>
-        <button type="button" class="reference-thumb" data-starter="A cinematic European street at golden hour, people dining outside, editorial photography"><img src="https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?auto=format&fit=crop&w=500&q=80" alt="European street"><span>Golden hour</span></button>
-        <button type="button" class="reference-thumb" data-starter="A dreamlike moonlit shoreline with violet clouds and a lone figure, cinematic fantasy art"><img src="https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=500&q=80" alt="Dreamlike shoreline"><span>Dreamlike shore</span></button>
-      </div>
-    </section>
+    <!-- Mobile Drawer & Backdrop -->
+    <div class="mobile-menu-backdrop" id="mobileMenuBackdrop"></div>
+    <aside class="mobile-menu-drawer" id="mobileMenuDrawer" aria-label="Mobile Navigation">
+     <div class="mobile-drawer-header">
+    <a href="#home" class="brand-link" aria-label="Go-AI Generator Home">
+        <span class="brand-go-mark">go</span>
+        <span class="brand-text">Go-AI Generator</span>
+    </a>
 
-    <section class="intro compact-intro">
-      <p class="eyebrow">FULL STUDIO CONTROLS</p>
-      <h2>Refine every detail.</h2>
-      <p class="intro-copy">Switch providers, add negative prompts, tune aspect ratio and style, then keep your results in the local archive.</p>
-    </section>
+    <button type="button" class="action-icon-btn" id="closeMobileDrawerBtn" aria-label="Close menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+    </button>
+</div>
+        <button type="button" class="action-icon-btn" id="closeMobileDrawerBtn" aria-label="Close menu">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
 
-    <section class="studio-layout" aria-label="Image generation studio">
-      <aside class="control-panel glass-panel">
-        <div class="panel-heading"><div><p class="eyebrow">CREATE</p><h2>Describe your image</h2></div><span class="panel-number">01</span></div>
-        <label class="field-label" for="prompt">Prompt</label>
-        <textarea id="prompt" rows="7" placeholder="A cinematic portrait of a traveler under an aurora..." spellcheck="true"></textarea>
-        <label class="field-label" for="negativePrompt">Negative prompt <span>optional</span></label>
-        <textarea id="negativePrompt" rows="3" placeholder="blurry, distorted, low quality"></textarea>
-        <div class="prompt-starters" aria-label="Prompt starters">
-          <span>Try a starter</span>
-          <button type="button" data-starter="Editorial portrait, soft window light, natural skin texture">Editorial portrait</button>
-          <button type="button" data-starter="Futuristic city at blue hour, cinematic atmosphere, wide composition">Futuristic city</button>
-          <button type="button" data-starter="Minimal product photograph on a sculptural pedestal, studio light">Product shot</button>
+      <ul class="mobile-nav-links">
+        <li><a href="#home" class="mobile-nav-link active">Home</a></li>
+        <li><a href="#generator" class="mobile-nav-link">Generate</a></li>
+        <li><a href="#explore" class="mobile-nav-link">Explore</a></li>
+        <li><a href="#history" class="mobile-nav-link">History</a></li>
+        <li><a href="#about" class="mobile-nav-link">About</a></li>
+      </ul>
+
+      <div class="mobile-drawer-footer">
+        <!-- Mobile User State -->
+        <div id="mobileProfileBlock" style="display: none; align-items: center; justify-content: space-between;">
+          <span id="mobileUserName" style="font-weight: 700; font-size: 0.9375rem;">User</span>
+          <button type="button" class="btn btn-sm btn-ghost danger" id="mobileLogoutBtn">Logout</button>
         </div>
-        <div class="field-grid">
-          <label class="field-label">Aspect ratio<select id="aspectRatio"><option value="1:1">1:1 · Square</option><option value="16:9">16:9 · Wide</option><option value="4:3">4:3 · Landscape</option><option value="3:4">3:4 · Portrait</option><option value="9:16">9:16 · Tall</option></select></label>
-          <label class="field-label">Style<select id="style"><option value="None">None</option><option value="Cinematic">Cinematic</option><option value="Photorealistic">Photorealistic</option><option value="Illustration">Illustration</option><option value="3D render">3D render</option></select></label>
-        </div>
-        <button class="generate-button" id="generateButton" type="button"><span>Generate image</span><b>↗</b></button>
-        <p class="helper-text" id="providerHelp">Pollinations can be used without an API key.</p>
-      </aside>
+        <button type="button" class="btn btn-secondary" id="mobileLoginBtn">Login / Sign Up</button>
+        <a href="#generator" class="btn btn-primary" id="mobileStartBtn">Start Creating</a>
+      </div>
+    </aside>
 
-      <section class="canvas-panel glass-panel" aria-live="polite">
-        <div class="panel-heading"><div><p class="eyebrow">CANVAS</p><h2 id="canvasTitle">Your image will appear here</h2></div><span class="panel-number">02</span></div>
-        <div class="canvas-stage" id="canvasStage"><div class="canvas-placeholder"><div class="placeholder-icon">✦</div><p>Write a prompt, choose your settings, and press generate.</p></div></div>
-        <div class="canvas-toolbar"><span class="canvas-status"><i></i><span id="canvasStatus">Ready for your prompt</span></span><div><button class="canvas-action" id="downloadImage" type="button" disabled>Download</button><button class="canvas-action" id="reuseImage" type="button" disabled>Reuse prompt</button></div></div>
-      </section>
-    </section>
+    <main>
+      <!-- ==========================================================================
+           HERO SECTION
+           ========================================================================== -->
+      <section class="hero-section" id="home">
+        <div class="container hero-grid">
+          <!-- Left: Hero Text Content -->
+          <div class="hero-content">
+            <div class="hero-badge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z" />
+              </svg>
+              <span>Next-Gen Visual Generation</span>
+            </div>
+           
+      <h1 class="hero-title">
+          <span id="typewriterText"></span><span class="typewriter-cursor">|</span>
+            </h1>
 
-    <section class="gallery-section glass-panel" id="gallery">
-      <div class="section-heading"><div><p class="eyebrow">ARCHIVE</p><h2>Recent generations</h2></div><button class="text-button" id="clearHistory" type="button">Clear history</button></div>
-      <div class="gallery-grid" id="galleryGrid"><p class="empty-history">Your generated images will be saved in this browser.</p></div>
-    </section>
-  </main>
 
-  <div class="modal-backdrop" id="keyModal" hidden>
-    <section class="modal glass-panel" role="dialog" aria-modal="true" aria-labelledby="keyModalTitle">
-      <button class="modal-close" id="closeKeys" type="button" aria-label="Close API key settings">×</button>
-      <p class="eyebrow">SETTINGS</p><h2 id="keyModalTitle">API keys</h2><p class="modal-copy">Keys are stored only in this browser. Never share them publicly.</p>
-      <label class="field-label" for="googleKey">Google API key<input id="googleKey" type="password" placeholder="Paste Google key"></label>
-      <label class="field-label" for="huggingfaceKey">Hugging Face API key<input id="huggingfaceKey" type="password" placeholder="Paste Hugging Face key"></label>
-      <div class="modal-actions"><button class="secondary-button" id="removeKeys" type="button">Remove keys</button><button class="primary-button" id="saveKeys" type="button">Save keys</button></div>
-    </section>
+            <p class="hero-subtitle">
+              Turn your ideas into stunning AI-generated images with Go-AI Generator. Explore unlimited styles, pristine fidelity, and instant creative flow.
+            </p>
+            <div class="hero-actions">
+              <a href="#generator" class="btn btn-primary btn-lg" id="heroStartBtn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z" />
+                </svg>
+                <span>Start Creating</span>
+              </a>
+              <a href="#explore" class="btn btn-secondary btn-lg" id="heroExploreBtn">
+                <span>Explore Creations</span>
+              </a>
+            </div>
+
+            <!-- Trust Bar -->
+            <div class="hero-trust-bar">
+              <div class="trust-item">
+                <span class="trust-number">100K+</span>
+                <span class="trust-label">Creations Generated</span>
+              </div>
+              <div class="trust-item">
+                <span class="trust-number">4K</span>
+                <span class="trust-label">Ultra-HD Fidelity</span>
+              </div>
+              <div class="trust-item">
+                <span class="trust-number">10+</span>
+                <span class="trust-label">Curated Art Styles</span>
+              </div>
+            </div>
+          </div>
+
+        <div class="visual-cards-cluster">
+
+  <!-- Art Card 1 -->
+  <div class="art-card art-card-1">
+    <img
+      class="art-card-img"
+      src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=900&q=90"
+      alt="Abstract futuristic AI artwork"
+      loading="eager"
+      onerror="this.style.display='none'"
+    />
+
+    <div class="art-card-badge">
+      <span>Sci-Fi Atmosphere</span>
+      <span>1024 × 1024</span>
+    </div>
   </div>
 
-  <div class="toast-stack" id="toastStack" aria-live="polite"></div>
-  <script src="script.js"></script>
-</body>
+  <!-- Art Card 2 -->
+  <div class="art-card art-card-2">
+    <img
+      class="art-card-img"
+      src="https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=900&q=90"
+      alt="Futuristic digital city artwork"
+      loading="eager"
+      onerror="this.style.display='none'"
+    />
+
+    <div class="art-card-badge">
+      <span>Cinematic 8K</span>
+      <span>1024 × 768</span>
+    </div>
+  </div>
+
+  <!-- Art Card 3 -->
+  <div class="art-card art-card-3">
+    <img
+      class="art-card-img"
+      src="https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=900&q=90"
+      alt="Iridescent 3D digital artwork"
+      loading="eager"
+      onerror="this.style.display='none'"
+    />
+
+    <div class="art-card-badge">
+      <span>3D Render</span>
+      <span>768 × 1024</span>
+    </div>
+  </div>
+
+</div>                      </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           MAIN GENERATOR WORKSPACE
+           ========================================================================== -->
+      <section class="generator-section" id="generator">
+        <div class="container">
+          <div class="section-header">
+            <div class="section-tag">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z" />
+              </svg>
+              <span>Image Studio</span>
+            </div>
+            <h2 class="section-title">AI Image Generator</h2>
+            <p class="section-subtitle">
+              Describe your vision, fine-tune style and dimensions, then bring your imagination to life.
+            </p>
+          </div>
+
+          <div class="generator-workspace">
+            <!-- Left Side: Controls -->
+            <div class="generator-controls">
+              <!-- Prompt Input -->
+              <div class="control-group">
+                <div class="control-group-header">
+                  <label for="promptTextarea" class="control-label">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 20h9"></path>
+                      <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                    </svg>
+                    <span>Prompt</span>
+                  </label>
+                  <div class="control-actions-top">
+                    <button type="button" class="action-chip-btn" id="enhancePromptBtn" title="Enhance prompt with cinematic details">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z" />
+                      </svg>
+                      <span>Enhance Prompt</span>
+                    </button>
+                    <button type="button" class="action-chip-btn clear" id="clearPromptBtn" title="Clear prompt text">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                      <span>Clear</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="prompt-box-wrapper">
+                  <textarea
+                    id="promptTextarea"
+                    class="prompt-textarea"
+                    placeholder="Describe the image you want to create... (e.g. A futuristic African city at sunset, cinematic lighting, ultra detailed, realistic architecture)"
+                    maxlength="500"
+                    rows="4"
+                  ></textarea>
+                  <div class="prompt-footer">
+                    <span>Be descriptive for best results</span>
+                    <span class="prompt-counter" id="promptCounter">0 / 500</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Style Selector -->
+              <div class="control-group">
+                <div class="control-group-header">
+                  <span class="control-label">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle>
+                      <circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle>
+                      <circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle>
+                      <circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle>
+                      <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"></path>
+                    </svg>
+                    <span>Art Style</span>
+                  </span>
+                </div>
+
+                <div class="style-grid" id="styleGrid">
+                  <button type="button" class="style-pill selected" data-style="realistic">
+                    <span class="style-pill-icon">📸</span>
+                    <span class="style-pill-name">Realistic</span>
+                  </button>
+                  <button type="button" class="style-pill" data-style="cinematic">
+                    <span class="style-pill-icon">🎬</span>
+                    <span class="style-pill-name">Cinematic</span>
+                  </button>
+                  <button type="button" class="style-pill" data-style="anime">
+                    <span class="style-pill-icon">✨</span>
+                    <span class="style-pill-name">Anime</span>
+                  </button>
+                  <button type="button" class="style-pill" data-style="digital-art">
+                    <span class="style-pill-icon">🎨</span>
+                    <span class="style-pill-name">Digital Art</span>
+                  </button>
+                  <button type="button" class="style-pill" data-style="fantasy">
+                    <span class="style-pill-icon">🐉</span>
+                    <span class="style-pill-name">Fantasy</span>
+                  </button>
+                  <button type="button" class="style-pill" data-style="3d-render">
+                    <span class="style-pill-icon">💎</span>
+                    <span class="style-pill-name">3D Render</span>
+                  </button>
+                  <button type="button" class="style-pill" data-style="watercolor">
+                    <span class="style-pill-icon">🖌️</span>
+                    <span class="style-pill-name">Watercolor</span>
+                  </button>
+                  <button type="button" class="style-pill" data-style="cyberpunk">
+                    <span class="style-pill-icon">🌆</span>
+                    <span class="style-pill-name">Cyberpunk</span>
+                  </button>
+                  <button type="button" class="style-pill" data-style="illustration">
+                    <span class="style-pill-icon">✒️</span>
+                    <span class="style-pill-name">Illustration</span>
+                  </button>
+                  <button type="button" class="style-pill" data-style="minimalist">
+                    <span class="style-pill-icon">⚪</span>
+                    <span class="style-pill-name">Minimalist</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Size & Count Controls -->
+              <div class="settings-row">
+                <!-- Image Size -->
+                <div class="control-group">
+                  <div class="control-group-header">
+                    <span class="control-label">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                      </svg>
+                      <span>Aspect Ratio & Size</span>
+                    </span>
+                  </div>
+                  <div class="options-pill-group" id="sizeOptionsGroup">
+                    <button type="button" class="option-btn size-option-btn" data-width="512" data-height="512">512 × 512</button>
+                    <button type="button" class="option-btn size-option-btn selected" data-width="1024" data-height="1024">1024 × 1024</button>
+                    <button type="button" class="option-btn size-option-btn" data-width="1024" data-height="768">1024 × 768</button>
+                    <button type="button" class="option-btn size-option-btn" data-width="768" data-height="1024">768 × 1024</button>
+                  </div>
+                </div>
+
+                <!-- Number of Images -->
+                <div class="control-group">
+                  <div class="control-group-header">
+                    <span class="control-label">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                      </svg>
+                      <span>Variations</span>
+                    </span>
+                  </div>
+                  <div class="options-pill-group" id="countOptionsGroup">
+                    <button type="button" class="option-btn count-option-btn selected" data-count="1">1 Image</button>
+                    <button type="button" class="option-btn count-option-btn" data-count="2">2 Images</button>
+                    <button type="button" class="option-btn count-option-btn" data-count="4">4 Images</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Main Generate Action Button -->
+              <button type="button" class="generate-btn" id="generateBtn">
+                <svg class="generate-btn-sparkle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"></path>
+                </svg>
+                <span>Generate Image</span>
+              </button>
+            </div>
+
+            <!-- Right Side: Preview & Progress -->
+            <div class="generator-preview" id="generatorPreview">
+              <!-- State 1: Empty Preview State -->
+              <div class="preview-empty-state" id="previewEmptyState">
+                <div class="empty-state-icon">
+                  <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                </div>
+                <h3 class="empty-state-title">Your creation will appear here</h3>
+                <p class="empty-state-desc">
+                  Enter a prompt on the left and click Generate Image to start crafting.
+                </p>
+              </div>
+
+              <!-- State 2: Loading State with Progress Ring -->
+              <div class="preview-loading-state" id="previewLoadingState">
+                <div class="progress-ring-container">
+                  <svg class="progress-ring-svg" viewBox="0 0 140 140">
+                    <circle class="progress-ring-bg" cx="70" cy="70" r="60"></circle>
+                    <circle class="progress-ring-indicator" id="progressRingIndicator" cx="70" cy="70" r="60"></circle>
+                  </svg>
+                  <div class="progress-ring-content">
+                    <span class="progress-ring-percent" id="progressRingPercent">0%</span>
+                    <div class="progress-ring-sparkle">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"></path>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div class="loading-label">Creating your image...</div>
+                  <div class="loading-sublabel">Synthesizing visual concepts & lighting</div>
+                </div>
+              </div>
+
+              <!-- State 3: Success State -->
+              <div class="preview-success-state" id="previewSuccessState">
+                <!-- Image Gallery Container (supports 1, 2, or 4 images) -->
+                <div class="results-gallery" id="resultsGallery" data-count="1">
+                  <!-- Dynamically populated -->
+                </div>
+
+                <!-- Action Toolbar -->
+                <div class="result-toolbar">
+                  <div class="result-prompt-summary" id="resultPromptSummary">
+                    "Prompt text goes here"
+                  </div>
+                  <div class="result-action-btns">
+                    <button type="button" class="action-icon-btn" id="resultCopyBtn" title="Copy Prompt" aria-label="Copy Prompt">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                      </svg>
+                    </button>
+                    <button type="button" class="action-icon-btn" id="resultFavoriteBtn" title="Favorite" aria-label="Save to Favorites">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                      </svg>
+                    </button>
+                    <button type="button" class="action-icon-btn" id="resultShareBtn" title="Share Creation" aria-label="Share Image">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="18" cy="5" r="3"></circle>
+                        <circle cx="6" cy="12" r="3"></circle>
+                        <circle cx="18" cy="19" r="3"></circle>
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                      </svg>
+                    </button>
+                    <button type="button" class="action-icon-btn" id="resultRegenerateBtn" title="Regenerate" aria-label="Regenerate Variation">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                      </svg>
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm" id="resultDownloadBtn" title="Download Image">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                      </svg>
+                      <span>Download</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           PROMPT IDEAS ("Need Inspiration?")
+           ========================================================================== -->
+      <section class="prompt-ideas-section" id="ideas">
+        <div class="container">
+          <div class="ideas-header">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 18h6"></path>
+              <path d="M10 22h4"></path>
+              <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5.76.76 1.23 1.52 1.41 2.5h6.18z"></path>
+            </svg>
+            <span>Need inspiration? Click any prompt to try it</span>
+          </div>
+
+          <div class="ideas-grid">
+            <button type="button" class="idea-card" data-prompt="Futuristic Lagos skyline at sunset, cyberpunk architecture, golden hour cinematic glow">
+              <span class="idea-text">"Futuristic Lagos skyline at sunset, cyberpunk architecture, golden hour cinematic glow"</span>
+              <div class="idea-footer">
+                <span>Cinematic</span>
+                <span>Use Prompt →</span>
+              </div>
+            </button>
+
+            <button type="button" class="idea-card" data-prompt="Ancient African kingdom in a fantasy world, mythical golden temples, lush jungle canopy">
+              <span class="idea-text">"Ancient African kingdom in a fantasy world, mythical golden temples, lush jungle canopy"</span>
+              <div class="idea-footer">
+                <span>Fantasy</span>
+                <span>Use Prompt →</span>
+              </div>
+            </button>
+
+            <button type="button" class="idea-card" data-prompt="Astronaut exploring an alien bioluminescent ocean, glowing flora, volumetric lighting">
+              <span class="idea-text">"Astronaut exploring an alien bioluminescent ocean, glowing flora, volumetric lighting"</span>
+              <div class="idea-footer">
+                <span>3D Render</span>
+                <span>Use Prompt →</span>
+              </div>
+            </button>
+
+            <button type="button" class="idea-card" data-prompt="Luxury futuristic electric hypercar in neon-lit Tokyo rain, photorealistic reflections">
+              <span class="idea-text">"Luxury futuristic electric hypercar in neon-lit Tokyo rain, photorealistic reflections"</span>
+              <div class="idea-footer">
+                <span>Realistic</span>
+                <span>Use Prompt →</span>
+              </div>
+            </button>
+
+            <button type="button" class="idea-card" data-prompt="Magical enchanted forest with glowing ethereal flowers and fireflies, mystical atmosphere">
+              <span class="idea-text">"Magical enchanted forest with glowing ethereal flowers and fireflies, mystical atmosphere"</span>
+              <div class="idea-footer">
+                <span>Digital Art</span>
+                <span>Use Prompt →</span>
+              </div>
+            </button>
+
+            <button type="button" class="idea-card" data-prompt="Cinematic portrait of a warrior with ornate obsidian armor, hyper-detailed, dramatic studio lighting">
+              <span class="idea-text">"Cinematic portrait of a warrior with ornate obsidian armor, hyper-detailed, dramatic studio lighting"</span>
+              <div class="idea-footer">
+                <span>Cinematic</span>
+                <span>Use Prompt →</span>
+              </div>
+            </button>
+
+            <button type="button" class="idea-card" data-prompt="Floating city above the clouds, utopian solarpunk architecture, golden sunlight rays">
+              <span class="idea-text">"Floating city above the clouds, utopian solarpunk architecture, golden sunlight rays"</span>
+              <div class="idea-footer">
+                <span>Anime</span>
+                <span>Use Prompt →</span>
+              </div>
+            </button>
+
+            <button type="button" class="idea-card" data-prompt="Cyberpunk marketplace in the future, bustling holographic stalls, cinematic depth of field">
+              <span class="idea-text">"Cyberpunk marketplace in the future, bustling holographic stalls, cinematic depth of field"</span>
+              <div class="idea-footer">
+                <span>Cyberpunk</span>
+                <span>Use Prompt →</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           EXPLORE GALLERY
+           ========================================================================== -->
+      <section class="explore-section" id="explore">
+        <div class="container">
+          <div class="section-header">
+            <div class="section-tag">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+              </svg>
+              <span>Community Showcase</span>
+            </div>
+            <h2 class="section-title">Explore Creations</h2>
+            <p class="section-subtitle">
+              Browse community artwork created with Go-AI Generator. Click any piece for prompt inspection and full-resolution view.
+            </p>
+          </div>
+
+          <!-- Category Filter Tabs -->
+          <div class="category-tabs" id="exploreCategoryTabs" role="tablist">
+            <button type="button" class="category-tab active" data-category="all" role="tab" aria-selected="true">All</button>
+            <button type="button" class="category-tab" data-category="realistic" role="tab" aria-selected="false">Realistic</button>
+            <button type="button" class="category-tab" data-category="anime" role="tab" aria-selected="false">Anime</button>
+            <button type="button" class="category-tab" data-category="fantasy" role="tab" aria-selected="false">Fantasy</button>
+            <button type="button" class="category-tab" data-category="3d" role="tab" aria-selected="false">3D Render</button>
+            <button type="button" class="category-tab" data-category="cinematic" role="tab" aria-selected="false">Cinematic</button>
+            <button type="button" class="category-tab" data-category="digital-art" role="tab" aria-selected="false">Digital Art</button>
+          </div>
+
+          <!-- Gallery Masonry Grid -->
+          <div class="gallery-grid" id="exploreGalleryGrid">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           HISTORY & FAVORITES SECTION
+           ========================================================================== -->
+      <section class="history-section" id="history">
+        <div class="container">
+          <div class="section-header">
+            <div class="section-tag">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 14 14"></polyline>
+              </svg>
+              <span>Saved Studio Work</span>
+            </div>
+            <h2 class="section-title">My Generations</h2>
+            <p class="section-subtitle">
+              Your session history and favorited creations. Revisit, re-prompt, or download your library anytime.
+            </p>
+          </div>
+
+          <div class="history-toolbar">
+            <div class="history-filter-tabs">
+              <button type="button" class="category-tab history-tab-btn active" data-filter="all">All Creations</button>
+              <button type="button" class="category-tab history-tab-btn" data-filter="favorites">Favorites Only</button>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" id="clearHistoryBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+              <span>Clear History</span>
+            </button>
+          </div>
+
+          <!-- History Cards Grid -->
+          <div class="history-grid" id="historyGrid">
+            <!-- Dynamically rendered based on localStorage & auth state -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           ABOUT SECTION
+           ========================================================================== -->
+      <section class="about-section" id="about">
+        <div class="container">
+          <div class="section-header">
+            <div class="section-tag">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+              <span>About The Platform</span>
+            </div>
+            <h2 class="section-title">Engineered For Creators</h2>
+            <p class="section-subtitle">
+              Go-AI Generator combines state-of-the-art diffusion neural synthesis with an intuitive, human-centered creative workspace.
+            </p>
+          </div>
+
+          <div class="about-features-grid">
+            <div class="feature-box">
+              <div class="feature-icon-wrapper">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"></path>
+                </svg>
+              </div>
+              <h3 class="feature-title">Precision Visual Synthesis</h3>
+              <p class="feature-text">
+                Generate high-resolution images with nuanced textures, atmospheric depth, and cinematic lighting from simple text prompts.
+              </p>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-icon-wrapper">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="14" width="7" height="7"></rect>
+                  <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+              </div>
+              <h3 class="feature-title">Curated Aesthetics & Styles</h3>
+              <p class="feature-text">
+                Seamlessly toggle between photorealism, anime, 3D render, watercolor, and cyberpunk without complex prompt engineering.
+              </p>
+            </div>
+
+            <div class="feature-box">
+              <div class="feature-icon-wrapper">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+              </div>
+              <h3 class="feature-title">Instant Export & Sharing</h3>
+              <p class="feature-text">
+                Direct lossless downloads, one-click prompt copying, native web sharing, and persistent browser session history.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ==========================================================================
+         AUTHENTICATION MODAL (In-Page, No Page Navigation)
+         ========================================================================== -->
+    <div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
+      <div class="auth-modal-card">
+        <button type="button" class="modal-close-btn" id="closeAuthModalBtn" aria-label="Close modal">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+
+        <div class="auth-modal-header">
+          <div class="auth-modal-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"></path>
+            </svg>
+          </div>
+          <h3 class="auth-modal-title" id="authModalTitle">Go-AI Studio</h3>
+          <p class="auth-modal-desc">Access your generation library, favorites, and creative settings.</p>
+        </div>
+
+        <!-- Auth Tabs -->
+        <div class="auth-tabs" role="tablist">
+          <button type="button" class="auth-tab-btn active" data-mode="login" role="tab">Login</button>
+          <button type="button" class="auth-tab-btn" data-mode="signup" role="tab">Sign Up</button>
+        </div>
+
+        <div class="auth-forms-container">
+          <!-- Form: Login -->
+          <form class="auth-form active" id="loginForm" data-mode="login" novalidate>
+            <div class="form-group">
+              <label for="loginEmail" class="form-label">Email Address</label>
+              <div class="input-wrapper">
+                <input type="email" id="loginEmail" class="input-field" placeholder="name@example.com" required autocomplete="email" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="loginPassword" class="form-label">Password</label>
+              <div class="input-wrapper">
+                <input type="password" id="loginPassword" class="input-field" placeholder="••••••••" required autocomplete="current-password" />
+                <button type="button" class="password-toggle-btn" data-target="loginPassword" aria-label="Toggle password visibility">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-meta-row">
+              <label class="checkbox-label">
+                <input type="checkbox" id="loginRemember" class="checkbox-input" checked />
+                <span>Remember me</span>
+              </label>
+              <a href="#" class="forgot-link" id="forgotPasswordLink">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="btn btn-primary auth-submit-btn" id="loginSubmitBtn">
+              <span>Sign In</span>
+            </button>
+
+            <p class="auth-toggle-prompt">
+              Don't have an account?
+              <span class="auth-toggle-link" onclick="switchAuthMode('signup')">Create Account</span>
+            </p>
+          </form>
+
+          <!-- Form: Sign Up -->
+          <form class="auth-form" id="signupForm" data-mode="signup" novalidate>
+            <div class="form-group">
+              <label for="signupName" class="form-label">Full Name</label>
+              <div class="input-wrapper">
+                <input type="text" id="signupName" class="input-field" placeholder="Alex Morgan" required autocomplete="name" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="signupEmail" class="form-label">Email Address</label>
+              <div class="input-wrapper">
+                <input type="email" id="signupEmail" class="input-field" placeholder="name@example.com" required autocomplete="email" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="signupPassword" class="form-label">Password</label>
+              <div class="input-wrapper">
+                <input type="password" id="signupPassword" class="input-field" placeholder="At least 6 characters" required autocomplete="new-password" />
+                <button type="button" class="password-toggle-btn" data-target="signupPassword" aria-label="Toggle password visibility">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="signupConfirmPassword" class="form-label">Confirm Password</label>
+              <div class="input-wrapper">
+                <input type="password" id="signupConfirmPassword" class="input-field" placeholder="Re-enter password" required autocomplete="new-password" />
+              </div>
+            </div>
+
+            <div class="form-meta-row">
+              <label class="checkbox-label">
+                <input type="checkbox" id="signupTerms" class="checkbox-input" required />
+                <span>I agree to the Terms of Service & Privacy Policy</span>
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary auth-submit-btn" id="signupSubmitBtn">
+              <span>Create Account</span>
+            </button>
+
+            <p class="auth-toggle-prompt">
+              Already have an account?
+              <span class="auth-toggle-link" onclick="switchAuthMode('login')">Sign In</span>
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==========================================================================
+         LIGHTBOX MODAL
+         ========================================================================== -->
+    <div class="lightbox-modal" id="lightboxModal" role="dialog" aria-modal="true" aria-label="Artwork Lightbox View">
+      <div class="lightbox-content-card">
+        <button type="button" class="modal-close-btn" id="closeLightboxBtn" aria-label="Close lightbox">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+
+        <div class="lightbox-img-area">
+          <img id="lightboxImage" src="" alt="Enlarged AI Artwork" />
+        </div>
+
+        <div class="lightbox-info-area">
+          <div>
+            <div class="lightbox-header">
+              <span class="lightbox-tag" id="lightboxTag">Art Style</span>
+            </div>
+            <div class="form-label" style="margin-top: 14px; margin-bottom: 6px;">Prompt</div>
+            <div class="lightbox-prompt-box" id="lightboxPrompt">Prompt text</div>
+          </div>
+
+          <div class="lightbox-actions">
+            <button type="button" class="btn btn-primary btn-sm" id="lightboxUsePromptBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"></path>
+              </svg>
+              <span>Use in Generator</span>
+            </button>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" class="btn btn-secondary btn-sm" id="lightboxDownloadBtn" style="flex:1;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span>Download</span>
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" id="lightboxCopyBtn" style="flex:1;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span>Copy Prompt</span>
+              </button>
+              <button type="button" class="action-icon-btn" id="lightboxShareBtn" title="Share" aria-label="Share">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="18" cy="5" r="3"></circle>
+                  <circle cx="6" cy="12" r="3"></circle>
+                  <circle cx="18" cy="19" r="3"></circle>
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==========================================================================
+         CONFIRMATION MODAL
+         ========================================================================== -->
+    <div class="modal-backdrop" id="confirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
+      <div class="confirm-modal-card">
+        <div class="confirm-icon-danger">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+        </div>
+        <h3 class="confirm-title" id="confirmModalTitle">Confirm Action</h3>
+        <p class="confirm-desc" id="confirmModalDesc">Are you sure you want to proceed?</p>
+        <div class="confirm-btn-group">
+          <button type="button" class="btn btn-secondary" id="cancelConfirmBtn">Cancel</button>
+          <button type="button" class="btn btn-primary" id="actionConfirmBtn" style="background: var(--error);">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==========================================================================
+         TOAST CONTAINER
+         ========================================================================== -->
+    <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- ==========================================================================
+         FOOTER
+         ========================================================================== -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-top">
+          <div class="footer-brand">
+            <div class="footer-brand-title">
+          <div class="footer-brand-title">
+    <span class="brand-go-mark footer-go-mark">go</span>
+    <span class="brand-text">Go-AI Generator</span>
+</div>
+            <p class="footer-tagline">
+              Turn your imagination into stunning images. Built with high-fidelity visual synthesis and clean creator workflows.
+            </p>
+          </div>
+
+          <div class="footer-links-group">
+            <div class="footer-column">
+              <h4 class="footer-column-title">Product</h4>
+              <a href="#generator" class="footer-link">Generator</a>
+              <a href="#explore" class="footer-link">Explore Showcase</a>
+              <a href="#history" class="footer-link">My Generations</a>
+              <a href="#about" class="footer-link">Architecture</a>
+            </div>
+
+            <div class="footer-column">
+              <h4 class="footer-column-title">Styles</h4>
+              <a href="#generator" class="footer-link">Photorealistic</a>
+              <a href="#generator" class="footer-link">Cinematic</a>
+              <a href="#generator" class="footer-link">Anime & Manga</a>
+              <a href="#generator" class="footer-link">3D Octane</a>
+            </div>
+
+            <div class="footer-column">
+              <h4 class="footer-column-title">Legal & Security</h4>
+              <a href="#about" class="footer-link">Terms of Service</a>
+              <a href="#about" class="footer-link">Privacy Policy</a>
+              <a href="#about" class="footer-link">Cookie Guidelines</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <div>
+            &copy; 2026 Go-AI Generator. All rights reserved.
+          </div>
+          <div class="social-links">
+            <a href="#" class="social-icon-btn" aria-label="Creative Community on Discord">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 6h-4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z"></path>
+                <path d="M6 18h4a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2Z"></path>
+              </svg>
+            </a>
+            <a href="#" class="social-icon-btn" aria-label="Follow on X / Twitter">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
+              </svg>
+            </a>
+            <a href="#" class="social-icon-btn" aria-label="GitHub Repository">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- JavaScript Application -->
+    <script src="script.js"></script>
+  </body>
 </html>
