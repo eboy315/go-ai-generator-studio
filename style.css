@@ -2295,6 +2295,41 @@ line-clamp: 3;
   box-shadow: var(--shadow-accent);
 }
 
+/* Original GO logo used inside Login / Sign Up modal */
+.auth-modal-icon.auth-go-logo {
+  width: auto;
+  height: auto;
+  min-width: 0;
+  min-height: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-modal-icon.auth-go-logo .brand-go-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: var(--font-sans);
+  font-size: 2rem;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: -0.09em;
+  text-transform: lowercase;
+
+  background: var(--accent-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
 .auth-modal-title {
   font-size: 1.5rem;
   font-weight: 800;
