@@ -1551,77 +1551,365 @@ img {
 }
 
 /* ==========================================================================
-   PROMPT IDEAS ("Need inspiration?")
+   PROMPT IDEAS — LIQUID GLASS
    ========================================================================== */
+
 .prompt-ideas-section {
-  padding: 20px 0 60px;
+  position: relative;
+  padding: 70px 0 90px;
+  overflow: hidden;
 }
 
+/* Ambient liquid-glass glow behind the section */
+.prompt-ideas-section::before,
+.prompt-ideas-section::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.22;
+  z-index: 0;
+}
+
+.prompt-ideas-section::before {
+  width: 320px;
+  height: 320px;
+  top: 10%;
+  left: -120px;
+  background: #6366f1;
+}
+
+.prompt-ideas-section::after {
+  width: 360px;
+  height: 360px;
+  right: -140px;
+  bottom: 5%;
+  background: #ec4899;
+}
+
+/* Header */
 .ideas-header {
+  position: relative;
+  z-index: 2;
+
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
+
+  margin: 0 auto 30px;
+
   font-size: 1.125rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 20px;
+
+  text-align: center;
 }
 
+.ideas-header svg {
+  flex-shrink: 0;
+  color: #c084fc;
+  filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.7));
+}
+
+/* Prompt Grid */
 .ideas-grid {
+  position: relative;
+  z-index: 2;
+
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
+  gap: 16px;
 }
 
+/* =========================================================
+   LIQUID GLASS CARD
+   ========================================================= */
+
 .idea-card {
-  padding: 16px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  position: relative;
+  isolation: isolate;
+
+  min-height: 150px;
+  padding: 20px;
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 12px;
+  gap: 18px;
+
+  overflow: hidden;
+
   cursor: pointer;
-  transition: all var(--transition-fast);
   text-align: left;
+
+  color: var(--text-primary);
+
+  /* Liquid glass */
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.12),
+      rgba(255, 255, 255, 0.035) 45%,
+      rgba(139, 92, 246, 0.08)
+    );
+
+  backdrop-filter: blur(22px) saturate(160%);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 22px;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.04),
+    0 12px 35px rgba(0, 0, 0, 0.28);
+
+  transition:
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.35s ease,
+    box-shadow 0.35s ease,
+    background 0.35s ease;
 }
 
+/* Glass reflection */
+.idea-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      120deg,
+      rgba(255, 255, 255, 0.18) 0%,
+      rgba(255, 255, 255, 0.04) 18%,
+      transparent 42%
+    );
+
+  opacity: 0.75;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Colored liquid glow */
+.idea-card::after {
+  content: "";
+  position: absolute;
+
+  width: 150px;
+  height: 150px;
+
+  right: -75px;
+  bottom: -85px;
+
+  border-radius: 50%;
+
+  background: var(--accent-gradient);
+
+  filter: blur(45px);
+  opacity: 0.18;
+
+  transition:
+    transform 0.45s ease,
+    opacity 0.45s ease;
+
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Hover */
 .idea-card:hover {
-  border-color: var(--accent-primary);
-  background: var(--bg-card-hover);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-sm);
+  transform: translateY(-7px);
+
+  border-color: rgba(167, 139, 250, 0.65);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.16),
+      rgba(139, 92, 246, 0.09) 50%,
+      rgba(236, 72, 153, 0.08)
+    );
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 18px 45px rgba(0, 0, 0, 0.38),
+    0 0 30px rgba(139, 92, 246, 0.16);
 }
 
+.idea-card:hover::after {
+  transform: scale(1.45);
+  opacity: 0.35;
+}
+
+/* Keyboard focus */
+.idea-card:focus-visible {
+  outline: none;
+  border-color: #a78bfa;
+
+  box-shadow:
+    0 0 0 3px rgba(139, 92, 246, 0.2),
+    0 16px 40px rgba(0, 0, 0, 0.35);
+}
+
+/* Prompt text */
 .idea-text {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-  line-height: 1.5;
+  position: relative;
+  z-index: 1;
+
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.6;
+
+  color: rgba(255, 255, 255, 0.78);
+
+  transition:
+    color 0.3s ease,
+    transform 0.3s ease;
 }
 
 .idea-card:hover .idea-text {
-  color: var(--text-primary);
+  color: #ffffff;
+  transform: translateX(2px);
 }
 
+/* Bottom metadata */
 .idea-footer {
+  position: relative;
+  z-index: 1;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--accent-primary);
+  gap: 12px;
+
+  font-size: 0.72rem;
+  font-weight: 700;
+
+  color: #a78bfa;
 }
 
-@media (max-width: 992px) {
+/* Category */
+.idea-footer span:first-child {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 5px 9px;
+
+  border-radius: 999px;
+
+  background: rgba(139, 92, 246, 0.12);
+  border: 1px solid rgba(139, 92, 246, 0.22);
+
+  color: #c4b5fd;
+
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Use Prompt */
+.idea-footer span:last-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  color: rgba(255, 255, 255, 0.65);
+
+  transition:
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.idea-card:hover .idea-footer span:last-child {
+  color: #ffffff;
+  transform: translateX(4px);
+}
+
+/* =========================================================
+   LIGHT THEME
+   ========================================================= */
+
+[data-theme="light"] .idea-card {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.78),
+      rgba(255, 255, 255, 0.52),
+      rgba(139, 92, 246, 0.08)
+    );
+
+  border-color: rgba(15, 23, 42, 0.1);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 12px 35px rgba(15, 23, 42, 0.08);
+}
+
+[data-theme="light"] .idea-card::before {
+  background:
+    linear-gradient(
+      120deg,
+      rgba(255, 255, 255, 0.7),
+      transparent 45%
+    );
+}
+
+[data-theme="light"] .idea-text {
+  color: var(--text-secondary);
+}
+
+[data-theme="light"] .idea-card:hover {
+  border-color: rgba(124, 58, 237, 0.35);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 18px 45px rgba(15, 23, 42, 0.12),
+    0 0 30px rgba(124, 58, 237, 0.08);
+}
+
+[data-theme="light"] .idea-card:hover .idea-text {
+  color: var(--text-primary);
+}
+
+[data-theme="light"] .idea-footer span:last-child {
+  color: var(--text-secondary);
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
   .ideas-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 540px) {
+@media (max-width: 640px) {
+  .prompt-ideas-section {
+    padding: 55px 0 70px;
+  }
+
+  .ideas-header {
+    align-items: flex-start;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
   .ideas-grid {
     grid-template-columns: 1fr;
+    gap: 13px;
+  }
+
+  .idea-card {
+    min-height: 135px;
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .idea-text {
+    font-size: 0.875rem;
   }
 }
 
